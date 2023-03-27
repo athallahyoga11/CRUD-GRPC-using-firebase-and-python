@@ -21,7 +21,8 @@ const mahasiswaProto = grpc.loadPackageDefinition(packageDefinition);
 const server = new grpc.Server();
 
 // Dummy data 
-let mahasiswa = [
+const mahasiswa = {
+  mahasiswa:[
   {
     id: "1",
     nama: "Rudi",
@@ -33,14 +34,20 @@ let mahasiswa = [
     nama: "Budi",
     nrp: "5118",
     nilai: 60
-  }
-]
+  }, 
+]}
+
 
 server.addService(mahasiswaProto.MahasiswaService.service, {
   getAll: (_, callback) => {
     callback(null, mahasiswa);
+  },
+  addMahasiswa: (call, callback) => {
+    const _mahasiswa = { ...call.request};
+    mahasiswa.mahasiswa.push(_mahasiswa)
+    callback(null, _mahasiswa)
   }
-})
+});
 
 // Start server 
 server.bindAsync(
